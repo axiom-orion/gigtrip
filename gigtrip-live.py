@@ -1,19 +1,21 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 import requests
 
 st.set_page_config(page_title="GigTrip Live", layout="wide", initial_sidebar_state="expanded")
 
 st.title("🎟️ GigTrip Live")
-st.caption("Music • Comedy • Sports • Auto-Find Tours • Affiliate Links 💰")
+st.caption("Music • Comedy • Sports • Group Trips with FOMO • Concierge Levels")
 
-# Persistent state
+# ================== PERSISTENT STATE ==================
 if "selected_bands" not in st.session_state:
     st.session_state.selected_bands = ["dirty heads", "the elovaters", "iration", "the movement", "foo fighters", "dave matthews band", "rebelution", "311", "slightly stoopid", "pepper", "tribal seeds", "soja"]
 if "custom_shows" not in st.session_state:
     st.session_state.custom_shows = []
+if "group_trips" not in st.session_state:
+    st.session_state.group_trips = []
 
 APP_ID = "gigtripper2026"
 
@@ -69,11 +71,11 @@ def get_all_shows():
     df_all = pd.concat([df_static, df_live, df_custom], ignore_index=True)
     return df_all.drop_duplicates(subset=["band", "date", "city"]).sort_values("date")
 
-# UI
+# ================== UI ==================
 col1, col2 = st.columns([3, 1])
 if col1.button("🔄 Refresh All Tour Dates"):
     st.cache_data.clear()
-    st.success("✅ Refreshed!")
+    st.success("✅ Refreshed from Bandsintown!")
     st.rerun()
 
 if col2.button("🎤 Add Popular Comedy Tours"):
@@ -87,7 +89,7 @@ df_all = get_all_shows()
 st.success(f"✅ {len(df_all)} events loaded (music + sports)")
 
 # TABS
-tab1, tab2, tab3 = st.tabs(["📋 My Artists", "🗺️ US Tour Map", "💼 Trip Planner + Earn"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["📋 My Artists", "🗺️ US Tour Map", "✨ Perfect Weekend Generator", "👥 Group Trip Organizer", "💼 Concierge & Earn"])
 
 with tab1:
     st.header("My Watched Artists")
@@ -112,46 +114,18 @@ with tab2:
     min_d = df_all['date'].min().date()
     max_d = df_all['date'].max().date()
     date_range = st.slider("Time Frame", min_value=min_d, max_value=max_d, value=(min_d, max_d))
-    
-    filtered = df_all[
-        (df_all['band'].isin(selected)) &
-        (df_all['date'].dt.date >= date_range[0]) &
-        (df_all['date'].dt.date <= date_range[1])
-    ]
+    filtered = df_all[(df_all['band'].isin(selected)) & (df_all['date'].dt.date >= date_range[0]) & (df_all['date'].dt.date <= date_range[1])]
     if not include_sports:
         filtered = filtered[filtered['type'] == 'music']
-    
     if not filtered.empty:
-        fig = px.scatter_geo(
-            filtered,
-            lat="lat",
-            lon="lon",
-            color="type",
-            color_discrete_map={"music": "#1E90FF", "sports": "#FF4500"},
-            hover_name="venue",
-            hover_data=["date", "city", "band"],
-            projection="usa",
-            scope="usa",
-            size_max=20
-        )
+        fig = px.scatter_geo(filtered, lat="lat", lon="lon", color="type",
+                             color_discrete_map={"music": "#1E90FF", "sports": "#FF4500"},
+                             hover_name="venue", hover_data=["date", "city", "band"],
+                             projection="usa", scope="usa", size_max=20)
         fig.update_layout(height=650)
         st.plotly_chart(fig, use_container_width=True)
 
-with tab3:
-    st.header("💼 Trip Planner + Support GigTrip")
-    st.info("Every ticket or hotel booked through these links helps pay for the app!")
-    city = st.selectbox("City", df_all['city'].unique())
-    nights = st.number_input("Nights", value=3, min_value=1)
-    people = st.number_input("Travelers", value=1, min_value=1)
-    est = (140*people) + (250*nights*people) + (200*people) + (160*nights*people)
-    st.metric("Est. Total", f"${est:,.0f}")
-
-    st.subheader("Quick Book & Earn")
-    st.markdown(f"**🎟️ Tickets** → [Buy on Ticketmaster](https://www.ticketmaster.com/search?q={city.replace(' ', '+')})")
-    st.markdown(f"**🏨 Hotels** → [Book on Booking.com](https://www.booking.com/searchresults.html?ss={city})")
-
-    if st.button("❤️ Support GigTrip – Buy Me a Coffee"):
-        st.markdown("[☕ Buy Me a Coffee →](https://buymeacoffee.com/axiom_orion)")
-
-st.sidebar.success("📲 Add to Home Screen → Install as app!")
-st.caption("✅ Sports integration + syntax fixed • App should load now!")
+with tab3:  # Loss Leader
+    st.header("✨ Perfect Weekend Generator (Free)")
+    st.write("Enter your favorite artists → we find the single best overlapping weekend")
+    artists_input = st.text_input("Enter 3+ artists (comma separated
