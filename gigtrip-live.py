@@ -9,7 +9,7 @@ st.set_page_config(page_title="GigTrip Live", layout="wide", initial_sidebar_sta
 st.title("🎟️ GigTrip Live")
 st.caption("Music • Comedy • Sports • Group Trips with FOMO • Concierge Levels")
 
-# ================== PERSISTENT STATE ==================
+# Persistent state
 if "selected_bands" not in st.session_state:
     st.session_state.selected_bands = ["dirty heads", "the elovaters", "iration", "the movement", "foo fighters", "dave matthews band", "rebelution", "311", "slightly stoopid", "pepper", "tribal seeds", "soja"]
 if "custom_shows" not in st.session_state:
@@ -19,7 +19,7 @@ if "group_trips" not in st.session_state:
 
 APP_ID = "gigtripper2026"
 
-# Static music + sports data
+# Static data
 STATIC_MUSIC = [
     {"band": "Iration", "date": date(2026,5,8), "city": "Corpus Christi", "venue": "Concrete Street Pavilion", "lat": 27.80, "lon": -97.40, "type": "music"},
     {"band": "The Elovaters", "date": date(2026,5,17), "city": "Morrison", "venue": "Red Rocks Amphitheatre", "lat": 39.67, "lon": -105.20, "type": "music"},
@@ -114,16 +114,35 @@ with tab2:
     min_d = df_all['date'].min().date()
     max_d = df_all['date'].max().date()
     date_range = st.slider("Time Frame", min_value=min_d, max_value=max_d, value=(min_d, max_d))
-    filtered = df_all[(df_all['band'].isin(selected)) & (df_all['date'].dt.date >= date_range[0]) & (df_all['date'].dt.date <= date_range[1])]
+    
+    filtered = df_all[
+        (df_all['band'].isin(selected)) &
+        (df_all['date'].dt.date >= date_range[0]) &
+        (df_all['date'].dt.date <= date_range[1])
+    ]
     if not include_sports:
         filtered = filtered[filtered['type'] == 'music']
+    
+    # FIXED: Remove invalid coordinates that crash Plotly
+    filtered = filtered[(filtered['lat'] != 0) & (filtered['lon'] != 0)]
+    
     if not filtered.empty:
-        fig = px.scatter_geo(filtered, lat="lat", lon="lon", color="type",
-                             color_discrete_map={"music": "#1E90FF", "sports": "#FF4500"},
-                             hover_name="venue", hover_data=["date", "city", "band"],
-                             projection="usa", scope="usa", size_max=20)
+        fig = px.scatter_geo(
+            filtered,
+            lat="lat",
+            lon="lon",
+            color="type",
+            color_discrete_map={"music": "#1E90FF", "sports": "#FF4500"},
+            hover_name="venue",
+            hover_data=["date", "city", "band"],
+            projection="albers usa",
+            scope="usa",
+            size_max=20
+        )
         fig.update_layout(height=650)
         st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.info("No valid events in this time frame yet.")
 
 with tab3:
     st.header("✨ Perfect Weekend Generator (Free Loss Leader)")
@@ -157,7 +176,7 @@ with tab4:
                 "invite_link": f"https://gigtrip.streamlit.app/?group={trip_name.replace(' ', '%20')}"
             }
             st.session_state.group_trips.append(new_trip)
-            st.success("✅ Group trip created! Share the link below.")
+            st.success("✅ Group trip created!")
             st.rerun()
 
     if st.session_state.group_trips:
@@ -198,4 +217,4 @@ with tab5:
         st.button("Book Concierge", disabled=True)
 
 st.sidebar.success("📲 Add to Home Screen → Install as app!")
-st.caption("✅ Full ULTRATHINK trip flow + viral features live")
+st.caption("✅ Map error fixed • Full app ready!")
