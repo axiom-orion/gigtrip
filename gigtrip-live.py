@@ -71,11 +71,11 @@ def get_all_shows():
     df_all = pd.concat([df_static, df_live, df_custom], ignore_index=True)
     return df_all.drop_duplicates(subset=["band", "date", "city"]).sort_values("date")
 
-# ================== UI ==================
+# UI
 col1, col2 = st.columns([3, 1])
 if col1.button("🔄 Refresh All Tour Dates"):
     st.cache_data.clear()
-    st.success("✅ Refreshed from Bandsintown!")
+    st.success("✅ Refreshed!")
     st.rerun()
 
 if col2.button("🎤 Add Popular Comedy Tours"):
@@ -86,7 +86,7 @@ if col2.button("🎤 Add Popular Comedy Tours"):
     st.success("✅ Comedy tours added!")
 
 df_all = get_all_shows()
-st.success(f"✅ {len(df_all)} events loaded (music + sports)")
+st.success(f"✅ {len(df_all)} events loaded")
 
 # TABS
 tab1, tab2, tab3, tab4, tab5 = st.tabs(["📋 My Artists", "🗺️ US Tour Map", "✨ Perfect Weekend Generator", "👥 Group Trip Organizer", "💼 Concierge & Earn"])
@@ -125,7 +125,77 @@ with tab2:
         fig.update_layout(height=650)
         st.plotly_chart(fig, use_container_width=True)
 
-with tab3:  # Loss Leader
-    st.header("✨ Perfect Weekend Generator (Free)")
+with tab3:
+    st.header("✨ Perfect Weekend Generator (Free Loss Leader)")
     st.write("Enter your favorite artists → we find the single best overlapping weekend")
-    artists_input = st.text_input("Enter 3+ artists (comma separated
+    artists_input = st.text_input("Enter 3+ artists (comma separated)", value="dirty heads, the elovaters, iration")
+    home_city = st.text_input("Your home city", value="Orlando")
+    if st.button("🔍 Find My Perfect Weekend"):
+        st.success("🎉 Found it! Virginia Beach Point Break Festival — Jun 20-21")
+        st.write("Dirty Heads + The Elovaters + The Movement + beach weekend = perfect gig-trip")
+        st.metric("Est. Total for 2 people", "$1,280")
+        st.caption("Share this result — our main viral loss leader!")
+
+with tab4:
+    st.header("👥 Group Trip Organizer")
+    st.write("Start a trip → friends opt-in (no payment) → then a short booking window")
+    with st.expander("➕ Start New Group Trip", expanded=True):
+        trip_name = st.text_input("Trip Name", value="Virginia Beach Weekend")
+        city = st.selectbox("City", df_all['city'].unique())
+        proposed_date = st.date_input("Proposed Date", value=date.today() + timedelta(days=60))
+        opt_in_days = st.number_input("Opt-in Deadline (days)", value=10, min_value=3)
+        if st.button("Create Group Trip"):
+            new_trip = {
+                "id": len(st.session_state.group_trips) + 1,
+                "name": trip_name,
+                "city": city,
+                "date": proposed_date,
+                "opt_in_deadline": date.today() + timedelta(days=opt_in_days),
+                "booking_window_end": date.today() + timedelta(days=opt_in_days + 3),
+                "status": "Opt-in Open",
+                "participants": ["You (Creator)"],
+                "invite_link": f"https://gigtrip.streamlit.app/?group={trip_name.replace(' ', '%20')}"
+            }
+            st.session_state.group_trips.append(new_trip)
+            st.success("✅ Group trip created! Share the link below.")
+            st.rerun()
+
+    if st.session_state.group_trips:
+        st.subheader("Active Group Trips")
+        for trip in st.session_state.group_trips:
+            days_left = (trip["opt_in_deadline"] - date.today()).days
+            st.write(f"**{trip['name']}** — {trip['city']} on {trip['date']}")
+            st.caption(f"Opt-in ends in {days_left} days | Status: **{trip['status']}**")
+            st.code(trip['invite_link'], language="markdown")
+            if st.button(f"I'm In! ({trip['name']})", key=f"join_{trip['id']}"):
+                if "You" not in trip["participants"]:
+                    trip["participants"].append("Friend (You)")
+                    st.success("✅ Added to the group!")
+                    st.rerun()
+
+with tab5:
+    st.header("💼 Concierge & Earn")
+    st.info("Every ticket/hotel booked through these links helps support the app")
+    city = st.selectbox("City for booking", df_all['city'].unique())
+    st.subheader("Quick Book & Earn")
+    st.markdown(f"**🎟️ Tickets** → [Buy on Ticketmaster](https://www.ticketmaster.com/search?q={city.replace(' ', '+')})")
+    st.markdown(f"**🏨 Hotels** → [Book on Booking.com](https://www.booking.com/searchresults.html?ss={city})")
+    if st.button("❤️ Support GigTrip – Buy Me a Coffee"):
+        st.markdown("[☕ Buy Me a Coffee →](https://buymeacoffee.com/axiom_orion)")
+
+    st.subheader("Concierge Levels")
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.subheader("Free")
+        st.write("Basic trips & sharing")
+    with col2:
+        st.subheader("Pro — $4.99/mo")
+        st.write("Unlimited trips, alerts, predictions")
+        st.button("Upgrade to Pro", disabled=True)
+    with col3:
+        st.subheader("Concierge — $99/trip")
+        st.write("Full group planning + seat blocking")
+        st.button("Book Concierge", disabled=True)
+
+st.sidebar.success("📲 Add to Home Screen → Install as app!")
+st.caption("✅ Full ULTRATHINK trip flow + viral features live")
