@@ -9,7 +9,7 @@ st.set_page_config(page_title="GigTrip Live", layout="wide", initial_sidebar_sta
 st.title("🎟️ GigTrip Live")
 st.caption("Music • Comedy • Sports • Auto-Find Tours • Affiliate Links 💰")
 
-# Persistent state
+# ================== PERSISTENT STATE ==================
 if "selected_bands" not in st.session_state:
     st.session_state.selected_bands = ["dirty heads", "the elovaters", "iration", "the movement", "foo fighters", "dave matthews band", "rebelution", "311", "slightly stoopid", "pepper", "tribal seeds", "soja"]
 if "custom_shows" not in st.session_state:
@@ -17,7 +17,7 @@ if "custom_shows" not in st.session_state:
 
 APP_ID = "gigtripper2026"
 
-# Static fallback data
+# Static fallback data (always available)
 STATIC_SHOWS = [
     {"band": "Iration", "date": date(2026,5,8), "city": "Corpus Christi", "venue": "Concrete Street Pavilion", "lat": 27.80, "lon": -97.40},
     {"band": "The Elovaters", "date": date(2026,5,17), "city": "Morrison", "venue": "Red Rocks Amphitheatre", "lat": 39.67, "lon": -105.20},
@@ -55,17 +55,21 @@ def fetch_band_shows(artist):
         return pd.DataFrame()
 
 def get_all_shows():
+    # FIXED: safe concat that handles zero live shows
     live_dfs = [fetch_band_shows(artist) for artist in st.session_state.selected_bands]
-    df_live = pd.concat([df for df in live_dfs if not df.empty], ignore_index=True) if live_dfs else pd.DataFrame()
+    live_dfs_filtered = [df for df in live_dfs if not df.empty]
+    df_live = pd.concat(live_dfs_filtered, ignore_index=True) if live_dfs_filtered else pd.DataFrame()
+    
     df_custom = pd.DataFrame(st.session_state.custom_shows) if st.session_state.custom_shows else pd.DataFrame()
+    
     df_all = pd.concat([df_static, df_live, df_custom], ignore_index=True)
     return df_all.drop_duplicates(subset=["band", "date", "city"]).sort_values("date")
 
-# UI
+# ================== UI ==================
 col1, col2 = st.columns([3, 1])
 if col1.button("🔄 Refresh All Tour Dates"):
     st.cache_data.clear()
-    st.success("✅ Refreshed!")
+    st.success("✅ Refreshed from Bandsintown!")
     st.rerun()
 
 if col2.button("🎤 Add Popular Comedy Tours"):
@@ -78,7 +82,7 @@ if col2.button("🎤 Add Popular Comedy Tours"):
 df_all = get_all_shows()
 st.success(f"✅ {len(df_all)} shows loaded")
 
-# Tabs
+# TABS
 tab1, tab2, tab3 = st.tabs(["📋 My Artists", "🗺️ US Tour Map", "💼 Trip Planner + Earn"])
 
 with tab1:
@@ -120,11 +124,4 @@ with tab3:
     st.metric("Est. Total", f"${est:,.0f}")
 
     st.subheader("Quick Book & Earn")
-    st.markdown(f"**🎟️ Tickets** → [Buy on Ticketmaster](https://www.ticketmaster.com/search?q={city.replace(' ', '+')})")
-    st.markdown(f"**🏨 Hotels** → [Book on Booking.com](https://www.booking.com/searchresults.html?ss={city})")
-
-    if st.button("❤️ Support GigTrip – Buy Me a Coffee"):
-        st.markdown("[☕ Buy Me a Coffee →](https://buymeacoffee.com/axiom_orion)")
-
-st.sidebar.success("📲 Add to Home Screen → Install as app!")
-st.caption("✅ Monetization started • Share the app with friends!")
+    st.markdown(f"**🎟️ Tickets** → [Buy on Ticketmaster](https://www.ticketmaster.com/search?q={
