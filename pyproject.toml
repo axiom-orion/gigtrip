@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gigtrip"
+version = "0.1.0"
+description = "Itinerary optimisation for live-event road trips — pick the set of shows that maximises preference-weighted value within a travel budget."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = []  # the engine + eval are pure standard library
+
+[project.optional-dependencies]
+ui = ["streamlit>=1.30", "pandas>=2.0", "plotly>=5.18", "requests>=2.31"]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
