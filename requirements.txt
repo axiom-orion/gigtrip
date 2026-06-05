@@ -1,4 +1,6 @@
-streamlit
-pandas
-requests
-plotly
+# Streamlit Cloud installs these for the UI (app/gigtrip_live.py).
+# The optimiser engine + eval need NONE of these — they are pure standard library.
+streamlit>=1.30
+pandas>=2.0
+plotly>=5.18
+requests>=2.31

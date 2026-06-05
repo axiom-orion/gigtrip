@@ -1,0 +1,262 @@
+[
+  {
+    "scenario": "Florida reggae summer",
+    "planner": "by-date",
+    "events": 6,
+    "value": 10.0,
+    "travel_km": 7757.5,
+    "itinerary": [
+      "m01",
+      "m02",
+      "m03",
+      "s02",
+      "m04",
+      "s03"
+    ]
+  },
+  {
+    "scenario": "Florida reggae summer",
+    "planner": "by-prize",
+    "events": 6,
+    "value": 18.0,
+    "travel_km": 11337.5,
+    "itinerary": [
+      "m01",
+      "m02",
+      "m07",
+      "m13",
+      "m15",
+      "m17"
+    ]
+  },
+  {
+    "scenario": "Florida reggae summer",
+    "planner": "distance-aware",
+    "events": 6,
+    "value": 12.0,
+    "travel_km": 2644.8,
+    "itinerary": [
+      "m12",
+      "m14",
+      "m15",
+      "m24",
+      "m25",
+      "m26"
+    ]
+  },
+  {
+    "scenario": "Florida reggae summer",
+    "planner": "optimal",
+    "events": 6,
+    "value": 18.0,
+    "travel_km": 7116.9,
+    "itinerary": [
+      "m01",
+      "m02",
+      "m13",
+      "m15",
+      "m19",
+      "m26"
+    ]
+  },
+  {
+    "scenario": "Red Rocks weekend",
+    "planner": "by-date",
+    "events": 2,
+    "value": 5.0,
+    "travel_km": 43.9,
+    "itinerary": [
+      "m04",
+      "s03"
+    ]
+  },
+  {
+    "scenario": "Red Rocks weekend",
+    "planner": "by-prize",
+    "events": 2,
+    "value": 5.0,
+    "travel_km": 43.9,
+    "itinerary": [
+      "m04",
+      "s03"
+    ]
+  },
+  {
+    "scenario": "Red Rocks weekend",
+    "planner": "distance-aware",
+    "events": 2,
+    "value": 5.0,
+    "travel_km": 43.9,
+    "itinerary": [
+      "m04",
+      "s03"
+    ]
+  },
+  {
+    "scenario": "Red Rocks weekend",
+    "planner": "optimal",
+    "events": 2,
+    "value": 5.0,
+    "travel_km": 43.9,
+    "itinerary": [
+      "m04",
+      "s03"
+    ]
+  },
+  {
+    "scenario": "West coast run",
+    "planner": "by-date",
+    "events": 4,
+    "value": 9.0,
+    "travel_km": 1486.3,
+    "itinerary": [
+      "m05",
+      "m06",
+      "s04",
+      "m07"
+    ]
+  },
+  {
+    "scenario": "West coast run",
+    "planner": "by-prize",
+    "events": 4,
+    "value": 10.0,
+    "travel_km": 1827.6,
+    "itinerary": [
+      "m05",
+      "m06",
+      "m07",
+      "m08"
+    ]
+  },
+  {
+    "scenario": "West coast run",
+    "planner": "distance-aware",
+    "events": 4,
+    "value": 8.0,
+    "travel_km": 970.1,
+    "itinerary": [
+      "m05",
+      "m06",
+      "s04",
+      "m08"
+    ]
+  },
+  {
+    "scenario": "West coast run",
+    "planner": "optimal",
+    "events": 4,
+    "value": 10.0,
+    "travel_km": 1827.6,
+    "itinerary": [
+      "m05",
+      "m06",
+      "m07",
+      "m08"
+    ]
+  },
+  {
+    "scenario": "Northeast sprint",
+    "planner": "by-date",
+    "events": 3,
+    "value": 8.0,
+    "travel_km": 894.5,
+    "itinerary": [
+      "m18",
+      "m19",
+      "m20"
+    ]
+  },
+  {
+    "scenario": "Northeast sprint",
+    "planner": "by-prize",
+    "events": 3,
+    "value": 8.0,
+    "travel_km": 894.5,
+    "itinerary": [
+      "m18",
+      "m19",
+      "m20"
+    ]
+  },
+  {
+    "scenario": "Northeast sprint",
+    "planner": "distance-aware",
+    "events": 3,
+    "value": 8.0,
+    "travel_km": 894.5,
+    "itinerary": [
+      "m18",
+      "m19",
+      "m20"
+    ]
+  },
+  {
+    "scenario": "Northeast sprint",
+    "planner": "optimal",
+    "events": 3,
+    "value": 8.0,
+    "travel_km": 894.5,
+    "itinerary": [
+      "m18",
+      "m19",
+      "m20"
+    ]
+  },
+  {
+    "scenario": "Sampler (mixed)",
+    "planner": "by-date",
+    "events": 5,
+    "value": 7.0,
+    "travel_km": 5356.7,
+    "itinerary": [
+      "c01",
+      "m10",
+      "m11",
+      "m12",
+      "m13"
+    ]
+  },
+  {
+    "scenario": "Sampler (mixed)",
+    "planner": "by-prize",
+    "events": 5,
+    "value": 11.0,
+    "travel_km": 4828.8,
+    "itinerary": [
+      "c01",
+      "m12",
+      "m13",
+      "m15",
+      "m16"
+    ]
+  },
+  {
+    "scenario": "Sampler (mixed)",
+    "planner": "distance-aware",
+    "events": 5,
+    "value": 10.0,
+    "travel_km": 1319.3,
+    "itinerary": [
+      "m12",
+      "m14",
+      "m15",
+      "m16",
+      "c02"
+    ]
+  },
+  {
+    "scenario": "Sampler (mixed)",
+    "planner": "optimal",
+    "events": 5,
+    "value": 11.0,
+    "travel_km": 2201.5,
+    "itinerary": [
+      "m12",
+      "m13",
+      "m15",
+      "m16",
+      "c02"
+    ]
+  }
+]
